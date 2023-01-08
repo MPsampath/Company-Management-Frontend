@@ -12,13 +12,16 @@ const EmployeeAttend = () => {
 
 
   // const {http,setToken} = Auth();
-  const [file, setFile] = useState<File>();
+  const [file, setFile] = useState<File | null>();
+  const [fileName, setFileName] = useState<String | null>();
   const [employees, setEmployees] = useState<any>([]);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-
+      
       setFile(e.target.files[0]);
+      setFileName(e.target.files[0].name);
+
     }
   }
 
@@ -31,8 +34,12 @@ const EmployeeAttend = () => {
           "Content-Type": "multipart/form-data",
         }
       }).then((res) => {
-        if (res.data == 1) {
+
+        if (res.data.sts == 1) {
+          setFile(null);     
           getData();
+          alert("File upload succsessfuly completed");
+          window.location.reload();
         }
 
       });
@@ -54,6 +61,7 @@ const EmployeeAttend = () => {
   return (
     <>
       <Card style={{ marginTop: '2%', marginLeft: '2%' }}>
+        <h1>Upload excell file</h1>
         <div>
           <input type="file" name='exel' onChange={handleFileChange} />
           <button onClick={() => onSubmit()}>Submit</button>
@@ -65,8 +73,8 @@ const EmployeeAttend = () => {
             <TableHead>
               <TableRow>
                 <TableCell>Name</TableCell>
-                <TableCell>checkin</TableCell>
-                <TableCell>checkout</TableCell>
+                <TableCell>Checkin</TableCell>
+                <TableCell>Checkout</TableCell>
                 <TableCell>Working hours</TableCell>
               </TableRow>
             </TableHead>
@@ -80,8 +88,8 @@ const EmployeeAttend = () => {
                   <TableCell component="th" scope="row">
                     {employee.emp_nam}
                   </TableCell>
-                  <TableCell>{employee.attend == 1 ? "Yes" : "No"}</TableCell>
-                  <TableCell >{employee.attend == 1 ? "No" : "Yes"}</TableCell>
+                  <TableCell>{employee.strt_time}</TableCell>
+                  <TableCell >{employee.end_time}</TableCell>
                   <TableCell>{employee.time}</TableCell>
                 </TableRow>
               ))}
